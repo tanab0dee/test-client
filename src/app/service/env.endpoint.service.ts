@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class EnvEndpointService {
 
   // Node-Express API endpoint
-  ENV_REST_API: string = 'http://localhost:8080/api';
+  ENV_REST_API: string = 'https://test-server-api-ynrr.onrender.com/api';
 
   constructor() { }
 }

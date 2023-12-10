@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthInterceptor } from 'src/app/interceptors/auth.interceptor';
 import { Emitter } from 'src/app/emitters/emitter';
+import { EnvEndpointService } from 'src/app/service/env.endpoint.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +13,13 @@ import { Emitter } from 'src/app/emitters/emitter';
 export class NavbarComponent implements OnInit {
   authenticated = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  ENV_REST_API = `${this.envEndpointService.ENV_REST_API}`
+  
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private envEndpointService: EnvEndpointService
+    ) {}
 
   ngOnInit(): void {
     Emitter.authEmitter.subscribe((auth: boolean) => {
@@ -22,7 +29,7 @@ export class NavbarComponent implements OnInit {
 
   logOut() {
     this.http
-      .post('http://localhost:8080/api/logout', {}, { withCredentials: true })
+      .post(`${this.ENV_REST_API}/logout`, {}, { withCredentials: true })
       .subscribe(() => {
         AuthInterceptor.accessToken = '';
         this.router.navigate(['/login']);

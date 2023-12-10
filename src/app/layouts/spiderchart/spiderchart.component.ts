@@ -10,6 +10,8 @@ import {
   ApexXAxis,
   ChartComponent,
 } from "ng-apexcharts";
+import { EnvEndpointService } from 'src/app/service/env.endpoint.service';
+
 export type ChartOptions = {
   series: ApexAxisChartSeries;
   chart: ApexChart;
@@ -43,10 +45,10 @@ export class SpiderchartComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private router: Router,
-  ) {
+    private envEndpointService: EnvEndpointService
+  ) {}
 
-  }
-
+  ENV_REST_API = `${this.envEndpointService.ENV_REST_API}`
   currentPage: number = 1;
   pageSize: number = 7;
 
@@ -67,7 +69,7 @@ export class SpiderchartComponent implements OnInit {
   }
 
   checkLogin() {
-    this.http.get('http://localhost:8080/api/user', { withCredentials: true })
+    this.http.get(`${this.ENV_REST_API}/user`, { withCredentials: true })
       .subscribe({
         next: (res: any) => {
           AuthInterceptor.accessToken;
@@ -81,7 +83,7 @@ export class SpiderchartComponent implements OnInit {
   }
 
   getHistory() {
-    this.http.get('http://localhost:8080/api/getHistory', { withCredentials: true })
+    this.http.get(`${this.ENV_REST_API}/getHistory`, { withCredentials: true })
       .subscribe({
         next: (res: any) => {
           console.log(res);
@@ -146,7 +148,7 @@ export class SpiderchartComponent implements OnInit {
 
   getPercentageSkillAndLevel(codeSkill: string, levelName: string, descIds: string[]): void {
     console.log(`Code Skill: ${codeSkill}, Level: ${levelName}, DescIds: ${descIds.join(', ')}`);
-    this.http.get(`http://localhost:8080/api/search?codeskill=${codeSkill}&level_name=${levelName}`, { withCredentials: true })
+    this.http.get(`${this.ENV_REST_API}/search?codeskill=${codeSkill}&level_name=${levelName}`, { withCredentials: true })
       .subscribe((data: any) => {
         const selectedLevels = data[0]?.levels.filter((level: any) => level.level_name == levelName);
         console.log(selectedLevels);

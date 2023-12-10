@@ -1,19 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, tap } from 'rxjs';
+import { EnvEndpointService } from 'src/app/service/env.endpoint.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PortfolioDataService {
-  private API_URL = 'http://localhost:8080/api';
+  
   private itemDeletedSubject = new Subject<void>();
   private newItemAddedSubject = new Subject<void>();
   private selectedSkillSubject = new Subject<string>();
   private nameSkill:string = "";
   private filteredSkills: any[] = [];
+  
+  ENV_REST_API = `${this.envEndpointService.ENV_REST_API}`
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private envEndpointService: EnvEndpointService
+    ) { }
 
   setFilteredSkills(filteredSkills: any[]): void {
     this.filteredSkills = filteredSkills;
@@ -34,22 +40,22 @@ export class PortfolioDataService {
 
   // GET
   getEducationData(): Observable<any> {
-    return this.http.get<any>(`${this.API_URL}/getEducation`, {
+    return this.http.get<any>(`${this.ENV_REST_API}/getEducation`, {
       withCredentials: true,
     });
   }
   getExperienceData(): Observable<any> {
-    return this.http.get<any>(`${this.API_URL}/getExperience`, {
+    return this.http.get<any>(`${this.ENV_REST_API}/getExperience`, {
       withCredentials: true,
     });
   }
   getLinkData(): Observable<any> {
-    return this.http.get<any>(`${this.API_URL}/getLink`, {
+    return this.http.get<any>(`${this.ENV_REST_API}/getLink`, {
       withCredentials: true,
     });
   }
   getAllSkillNames(): Observable<any> {
-    return this.http.get<any>(`${this.API_URL}/getHistory`, {
+    return this.http.get<any>(`${this.ENV_REST_API}/getHistory`, {
       withCredentials: true,
     });
   }
@@ -65,21 +71,21 @@ export class PortfolioDataService {
   // POST
   saveEducation(formData: any): Observable<any> {
     return this.http
-      .post(`${this.API_URL}/createEducation`, formData, {
+      .post(`${this.ENV_REST_API}/createEducation`, formData, {
         withCredentials: true,
       })
       .pipe(tap(() => this.newItemAddedSubject.next()));
   }
   saveExperience(formData: any): Observable<any> {
     return this.http
-      .post(`${this.API_URL}/createExperience`, formData, {
+      .post(`${this.ENV_REST_API}/createExperience`, formData, {
         withCredentials: true,
       })
       .pipe(tap(() => this.newItemAddedSubject.next()));
   }
   saveLink(formData: any): Observable<any> {
     return this.http
-      .post(`${this.API_URL}/createLink`, formData, {
+      .post(`${this.ENV_REST_API}/createLink`, formData, {
         withCredentials: true,
       })
       .pipe(tap(() => this.newItemAddedSubject.next()));
@@ -93,7 +99,7 @@ export class PortfolioDataService {
   updateEducation(formData: any): Observable<any> {
     const educationId = formData.education_id;
     return this.http.put(
-      `${this.API_URL}/updateEducation?education_id=${educationId}`,
+      `${this.ENV_REST_API}/updateEducation?education_id=${educationId}`,
       formData,
       {
         withCredentials: true,
@@ -103,7 +109,7 @@ export class PortfolioDataService {
   updateExperience(formData: any): Observable<any> {
     const experienceId = formData.exp_id;
     return this.http.put(
-      `${this.API_URL}/updateExperience?exp_id=${experienceId}`,
+      `${this.ENV_REST_API}/updateExperience?exp_id=${experienceId}`,
       formData,
       {
         withCredentials: true,
@@ -113,7 +119,7 @@ export class PortfolioDataService {
   updateLink(formData: any): Observable<any> {
     const linkId = formData.link_id;
     return this.http.put(
-      `${this.API_URL}/updateLink?link_id=${linkId}`,
+      `${this.ENV_REST_API}/updateLink?link_id=${linkId}`,
       formData,
       {
         withCredentials: true,
@@ -124,7 +130,7 @@ export class PortfolioDataService {
   // DELETE
   deleteEducation(educationId: string): Observable<any> {
     return this.http
-      .delete(`${this.API_URL}/deleteEducation?education_id=${educationId}`, {
+      .delete(`${this.ENV_REST_API}/deleteEducation?education_id=${educationId}`, {
         withCredentials: true,
       })
       .pipe(
@@ -134,7 +140,7 @@ export class PortfolioDataService {
   }
   deleteExperience(experienceId: string): Observable<any> {
     return this.http
-      .delete(`${this.API_URL}/deleteExperience?exp_id=${experienceId}`, {
+      .delete(`${this.ENV_REST_API}/deleteExperience?exp_id=${experienceId}`, {
         withCredentials: true,
       })
       .pipe(
@@ -144,7 +150,7 @@ export class PortfolioDataService {
   }
   deleteLink(linkId: string): Observable<any> {
     return this.http
-      .delete(`${this.API_URL}/deleteLink?link_id=${linkId}`, {
+      .delete(`${this.ENV_REST_API}/deleteLink?link_id=${linkId}`, {
         withCredentials: true,
       })
       .pipe(

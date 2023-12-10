@@ -8,10 +8,10 @@ import { MessageService } from 'primeng/api';
 import { PrimeNGConfig } from 'primeng/api';
 import { Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
-
+import { EnvEndpointService } from 'src/app/service/env.endpoint.service';
 import { PortfolioDataService } from 'src/app/service/portfolio-data.service';
 
-const API_URL = 'http://localhost:8080/api';
+
 
 interface LinkInfo {
   link_id: string;
@@ -28,6 +28,7 @@ interface LinkInfo {
 export class LinkComponent implements OnInit {
   link: LinkInfo[] = [];
   updateForm: FormGroup;
+  ENV_REST_API = `${this.envEndpointService.ENV_REST_API}`
 
   constructor(
     public dialog: MatDialog,
@@ -36,7 +37,8 @@ export class LinkComponent implements OnInit {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private primengConfig: PrimeNGConfig,
-    private portfolioDataService: PortfolioDataService
+    private portfolioDataService: PortfolioDataService,
+    private envEndpointService: EnvEndpointService
   ) {
     this.updateForm = this.formBuilder.group({
       link_id: '',
