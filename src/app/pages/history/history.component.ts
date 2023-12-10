@@ -164,7 +164,7 @@ export class HistoryComponent implements OnInit {
   // Declare groupedByLevel at the class level
   groupedByLevel: Map<string, { codeSkill: string, skillName: string, levelName: string, description: string[], percentage: number }> = new Map();
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.checkLogin();
     Emitter.authEmitter.emit(true);
     this.getHistory();
@@ -172,7 +172,7 @@ export class HistoryComponent implements OnInit {
     this.dropDownSkills();
   }
 
-  checkLogin() {
+  checkLogin(): void {
     this.http.get(`${this.ENV_REST_API}/user`, { withCredentials: true })
       .subscribe({
         next: (res: any) => {
