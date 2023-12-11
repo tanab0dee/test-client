@@ -173,7 +173,7 @@ export class PortfolioComponent implements OnInit {
     this.filterSkills();
     this.dropDownSkills();
     this.checkDataLength();
-    this.checkLogin()
+    this.checkLogin();
     this.portfolioDataService
       .getItemDeletedSubject()
       .subscribe(() => this.checkDataLength());
