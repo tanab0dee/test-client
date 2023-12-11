@@ -1,3 +1,4 @@
+import { CookieService } from 'ngx-cookie-service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -18,7 +19,8 @@ export class NavbarComponent implements OnInit {
   constructor(
     private http: HttpClient, 
     private router: Router,
-    private envEndpointService: EnvEndpointService
+    private envEndpointService: EnvEndpointService,
+    private cookieService: CookieService
     ) {}
 
   ngOnInit(): void {
@@ -28,6 +30,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logOut() {
+    this.cookieService.deleteAll();
     this.http
       .post(`${this.ENV_REST_API}/logout`, {}, { withCredentials: true })
       .subscribe(() => {
