@@ -6,8 +6,9 @@ import { Emitter } from 'src/app/emitters/emitter';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { finalize } from 'rxjs/operators';
-
+import { AuthInterceptor } from 'src/app/interceptors/auth.interceptor';
 import { PortfolioDataService } from 'src/app/service/portfolio-data.service';
+import { EnvEndpointService } from 'src/app/service/env.endpoint.service';
 
 interface ExperienceInfo {
   exp_id: string;
@@ -23,6 +24,7 @@ interface ExperienceInfo {
 export class ExperienceComponent implements OnInit {
   experience: ExperienceInfo[] = [];
   updateForm: FormGroup;
+  ENV_REST_API = `${this.envEndpointService.ENV_REST_API}`
 
   constructor(
     public dialog: MatDialog,
@@ -30,7 +32,8 @@ export class ExperienceComponent implements OnInit {
     private http: HttpClient,
     private formBuilder: FormBuilder,
     private messageService: MessageService,
-    private portfolioDataService: PortfolioDataService
+    private portfolioDataService: PortfolioDataService,
+    private envEndpointService: EnvEndpointService
   ) {
     this.updateForm = this.formBuilder.group({
       exp_id: '',
@@ -40,6 +43,21 @@ export class ExperienceComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchExperienceData();
+    this.checkLogin();
+  }
+
+  checkLogin(): void {
+    this.http.get(`${this.ENV_REST_API}/user`, { withCredentials: true })
+      .subscribe({
+        next: (res: any) => {
+          AuthInterceptor.accessToken;
+          Emitter.authEmitter.emit(true);
+        },
+        error: () => {
+          this.router.navigate(['/login']);
+          Emitter.authEmitter.emit(false);
+        }
+      });
   }
 
   fetchExperienceData(): void {
