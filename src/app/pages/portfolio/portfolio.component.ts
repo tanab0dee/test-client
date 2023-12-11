@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
+import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Emitter } from 'src/app/emitters/emitter';
 import { EnvEndpointService } from 'src/app/service/env.endpoint.service';
 import { HttpClient } from '@angular/common/http';
 import { PortfolioDataService } from 'src/app/service/portfolio-data.service';
+import { AuthInterceptor } from 'src/app/interceptors/auth.interceptor';
 
 import {
   ApexChart,
@@ -142,6 +144,7 @@ export class PortfolioComponent implements OnInit {
     private http: HttpClient,
     private envEndpointService: EnvEndpointService,
     private portfolioDataService: PortfolioDataService,
+    private router: Router,
   ) {
     this.chartOptions.series = [
       {
@@ -169,9 +172,8 @@ export class PortfolioComponent implements OnInit {
     this.getHistory();
     this.filterSkills();
     this.dropDownSkills();
-
     this.checkDataLength();
-
+    this.checkLogin()
     this.portfolioDataService
       .getItemDeletedSubject()
       .subscribe(() => this.checkDataLength());
@@ -193,7 +195,19 @@ export class PortfolioComponent implements OnInit {
     console.log('Filtered Skills:', filteredSkills);
   }
 
-
+  checkLogin(): void {
+    this.http.get(`${this.ENV_REST_API}/user`, { withCredentials: true })
+      .subscribe({
+        next: (res: any) => {
+          AuthInterceptor.accessToken;
+          Emitter.authEmitter.emit(true);
+        },
+        error: () => {
+          this.router.navigate(['/login']);
+          Emitter.authEmitter.emit(false);
+        }
+      });
+  }
 
   getHistory() {
     this.http.get(`${this.ENV_REST_API}/getHistory`, { withCredentials: true })
