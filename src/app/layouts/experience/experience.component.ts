@@ -63,6 +63,8 @@ export class ExperienceComponent implements OnInit {
   fetchExperienceData(): void {
     this.portfolioDataService.getExperienceData().subscribe({
       next: (res) => {
+        AuthInterceptor.accessToken;
+        Emitter.authEmitter.emit(true);
         this.experience = res.data;
       },
       error: () => {
