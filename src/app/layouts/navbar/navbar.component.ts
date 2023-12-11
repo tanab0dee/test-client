@@ -32,7 +32,6 @@ export class NavbarComponent implements OnInit {
       .post(`${this.ENV_REST_API}/logout`, {}, { withCredentials: true })
       .subscribe(() => {
         AuthInterceptor.accessToken = '';
-        document.cookie = '';
         this.router.navigate(['/login']);
         Emitter.authEmitter.emit(false);
       });
