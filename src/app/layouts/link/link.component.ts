@@ -10,7 +10,8 @@ import { Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { EnvEndpointService } from 'src/app/service/env.endpoint.service';
 import { PortfolioDataService } from 'src/app/service/portfolio-data.service';
-import { AuthInterceptor } from 'src/app/interceptors/auth.interceptor';
+
+
 
 interface LinkInfo {
   link_id: string;
@@ -49,28 +50,11 @@ export class LinkComponent implements OnInit {
   ngOnInit(): void {
     this.fetchLinkData();
     this.primengConfig.ripple = true;
-    this.checkLogin();
-  }
-
-  checkLogin(): void {
-    this.http.get(`${this.ENV_REST_API}/user`, { withCredentials: true })
-      .subscribe({
-        next: (res: any) => {
-          AuthInterceptor.accessToken;
-          Emitter.authEmitter.emit(true);
-        },
-        error: () => {
-          this.router.navigate(['/login']);
-          Emitter.authEmitter.emit(false);
-        }
-      });
   }
 
   fetchLinkData(): void {
     this.portfolioDataService.getLinkData().subscribe({
       next: (res) => {
-        AuthInterceptor.accessToken;
-        Emitter.authEmitter.emit(true);
         this.link = res.data;
       },
       error: () => {
