@@ -76,6 +76,8 @@ export class EducationComponent implements OnInit {
   fetchEducationData(): void {
     this.portfolioDataService.getEducationData().subscribe({
       next: (res) => {
+        AuthInterceptor.accessToken;
+        Emitter.authEmitter.emit(true);
         this.education = res.data;
       },
       error: () => {
