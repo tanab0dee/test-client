@@ -69,6 +69,8 @@ export class LinkComponent implements OnInit {
   fetchLinkData(): void {
     this.portfolioDataService.getLinkData().subscribe({
       next: (res) => {
+        AuthInterceptor.accessToken;
+        Emitter.authEmitter.emit(true);
         this.link = res.data;
       },
       error: () => {
