@@ -7,8 +7,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { PrimeNGConfig } from 'primeng/api';
 import { finalize } from 'rxjs/operators';
-
+import { AuthInterceptor } from 'src/app/interceptors/auth.interceptor';
 import { PortfolioDataService } from 'src/app/service/portfolio-data.service';
+import { EnvEndpointService } from 'src/app/service/env.endpoint.service';
 
 interface EducationInfo {
   education_id: string;
@@ -29,6 +30,7 @@ interface EducationInfo {
 export class EducationComponent implements OnInit {
   education: EducationInfo[] = [];
   updateForm: FormGroup;
+  ENV_REST_API = `${this.envEndpointService.ENV_REST_API}`
 
   constructor(
     public dialog: MatDialog,
@@ -37,7 +39,8 @@ export class EducationComponent implements OnInit {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private primengConfig: PrimeNGConfig,
-    private portfolioDataService: PortfolioDataService
+    private portfolioDataService: PortfolioDataService,
+    private envEndpointService: EnvEndpointService
   ) {
     this.updateForm = this.formBuilder.group({
       education_id: '',
@@ -53,6 +56,21 @@ export class EducationComponent implements OnInit {
   ngOnInit(): void {
     this.fetchEducationData();
     this.primengConfig.ripple = true;
+    this.checkLogin();
+  }
+
+  checkLogin(): void {
+    this.http.get(`${this.ENV_REST_API}/user`, { withCredentials: true })
+      .subscribe({
+        next: (res: any) => {
+          AuthInterceptor.accessToken;
+          Emitter.authEmitter.emit(true);
+        },
+        error: () => {
+          this.router.navigate(['/login']);
+          Emitter.authEmitter.emit(false);
+        }
+      });
   }
 
   fetchEducationData(): void {
